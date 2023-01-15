@@ -8,7 +8,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
-        
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
@@ -29,7 +29,7 @@ minecraft {
     //mappings channel: 'snapshot', version: '20171003-1.12'
     mappings channel: 'snapshot', version: '20171003-1.12'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
@@ -56,11 +56,17 @@ minecraft {
     }
 }
 
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -74,12 +80,11 @@ dependencies {
     // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 
     // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    implementation(fg.deobf('com.modularwarfare:modularwarfare:2.3.2f'))
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile fileTree(dir: 'libs', include: '*.jar')
 
 }
 
@@ -87,16 +92,16 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "FMLCorePlugin": "mchhui.modularmovements.coremod.ModularMovementsPlugin",
-            "FMLCorePluginContainsFMLMod": true,
-            "ForceLoadAsMod": true
+                "Specification-Title"        : "examplemod",
+                "Specification-Vendor"       : "examplemodsareus",
+                "Specification-Version"      : "1", // We are version 1 of ourselves
+                "Implementation-Title"       : project.name,
+                "Implementation-Version"     : "${version}",
+                "Implementation-Vendor"      : "examplemodsareus",
+                "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "FMLCorePlugin"              : "mchhui.modularmovements.coremod.ModularMovementsPlugin",
+                "FMLCorePluginContainsFMLMod": true,
+                "ForceLoadAsMod"             : true
         ])
     }
 }

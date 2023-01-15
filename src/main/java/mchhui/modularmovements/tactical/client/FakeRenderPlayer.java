@@ -1,9 +1,8 @@
 package mchhui.modularmovements.tactical.client;
 
-import com.modularwarfare.client.model.layers.RenderLayerBackpack;
-import com.modularwarfare.client.model.layers.RenderLayerBody;
-import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
-import mchhui.modularmovements.ModularMovements;
+//import com.modularwarfare.client.model.layers.RenderLayerBackpack;
+//import com.modularwarfare.client.model.layers.RenderLayerBody;
+//import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -25,12 +24,12 @@ public class FakeRenderPlayer extends RenderPlayer {
                 break;
             }
         }
-        if (ModularMovements.mwfEnable) {
+//        if (ModularMovements.mwfEnable) {
             this.addLayer(new FakeLayerBipedArmor(this));
-            this.addLayer(new RenderLayerBackpack(this, this.getMainModel().bipedBodyWear));
-            this.addLayer(new RenderLayerBody(this, this.getMainModel().bipedBodyWear));
-            this.addLayer(new RenderLayerHeldGun(this));
-        }
+//            this.addLayer(new RenderLayerBackpack(this, this.getMainModel().bipedBodyWear));
+//            this.addLayer(new RenderLayerBody(this, this.getMainModel().bipedBodyWear));
+//            this.addLayer(new RenderLayerHeldGun(this));
+//        }
     }
 
     public FakeRenderPlayer(RenderManager renderManager) {

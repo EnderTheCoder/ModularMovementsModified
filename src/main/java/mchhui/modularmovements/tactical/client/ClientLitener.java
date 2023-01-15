@@ -4,17 +4,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import com.modularwarfare.common.guns.ItemGun;
+//import com.modularwarfare.common.guns.ItemGun;
 import mchhui.modularmovements.ModularMovements;
 import mchhui.modularmovements.tactical.PlayerState;
 import mchhui.modularmovements.tactical.network.TacticalHandler;
 import mchhui.modularmovements.tactical.server.ServerListener;
+import net.minecraft.init.MobEffects;
+import net.minecraft.stats.StatList;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.modularwarfare.common.type.BaseItem;
+//import com.modularwarfare.common.type.BaseItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -63,7 +66,7 @@ public class ClientLitener {
     public static KeyBinding crawling = new KeyBinding("Crawling", 44, "ModularMovements");
     public static KeyBinding leftProbe = new KeyBinding("Left Probe", 16, "ModularMovements");
     public static KeyBinding rightProbe = new KeyBinding("Right Probe", 18, "ModularMovements");
-
+    public static KeyBinding swoop = new KeyBinding("Swoop", 44, "ModularMovements");
     public static PlayerState clientPlayerState = new PlayerState.ClientPlayerState();
     public static Map<Integer, PlayerState> ohterPlayerStateMap = new HashMap<Integer, PlayerState>();
 
@@ -93,7 +96,7 @@ public class ClientLitener {
     private static Field speedInAir;
 
     public int lastCode = 0;
-    
+
     @SubscribeEvent
     public void onTickClient(ClientTickEvent event) {
         if (event.phase == Phase.START) {
@@ -124,6 +127,7 @@ public class ClientLitener {
     public void onFMLInit(FMLInitializationEvent event) {
         ClientRegistry.registerKeyBinding(sit);
         ClientRegistry.registerKeyBinding(crawling);
+        ClientRegistry.registerKeyBinding(swoop);
         ClientRegistry.registerKeyBinding(leftProbe);
         ClientRegistry.registerKeyBinding(rightProbe);
         speedInAir = ReflectionHelper.findField(EntityPlayer.class, "speedInAir", "field_71102_ce");
@@ -162,41 +166,60 @@ public class ClientLitener {
         }
 
         //sit
-        if(clientPlayerState.canSit()) {
-            if ((!sitKeyLock && isButtonDown(sit.getKeyCode())) || wannaSliding) {
-                if (!clientPlayerState.isSitting || wannaSliding) {
-                    if (Minecraft.getMinecraft().player.onGround) {
-                        sitKeyLock = true;
-                        wannaSliding = false;
-                        AxisAlignedBB axisalignedbb;
-                        axisalignedbb = new AxisAlignedBB(clientPlayer.posX - 0.1, clientPlayer.posY + 0.1,
-                                clientPlayer.posZ - 0.1, clientPlayer.posX + 0.1, clientPlayer.posY + 1.2,
-                                clientPlayer.posZ + 0.1);
-                        if (!clientPlayer.world.collidesWithAnyBlock(axisalignedbb)) {
-                            if (!clientPlayerState.isSitting) {
-                                clientPlayerState.enableSit();
-                            }
-
-                            if (Minecraft.getMinecraft().player.isSprinting() && ModularMovements.CONFIG.slide.enable) {
-                                if (wannaSliding) {
-                                    clientPlayerSitMoveAmplifierCharging = 1;
+        if (!clientPlayer.isSprinting()) {
+            if (clientPlayerState.canSit()) {
+                if ((!sitKeyLock && isButtonDown(sit.getKeyCode())) || wannaSliding) {
+                    if (!clientPlayerState.isSitting || wannaSliding) {
+                        if (Minecraft.getMinecraft().player.onGround) {
+                            sitKeyLock = true;
+                            wannaSliding = false;
+                            AxisAlignedBB axisalignedbb;
+                            axisalignedbb = new AxisAlignedBB(clientPlayer.posX - 0.1, clientPlayer.posY + 0.1,
+                                    clientPlayer.posZ - 0.1, clientPlayer.posX + 0.1, clientPlayer.posY + 1.2,
+                                    clientPlayer.posZ + 0.1);
+                            if (!clientPlayer.world.collidesWithAnyBlock(axisalignedbb)) {
+                                if (!clientPlayerState.isSitting) {
+                                    clientPlayerState.enableSit();
                                 }
-                                clientPlayerSitMoveAmplifierCharged = clientPlayerSitMoveAmplifierCharging;
-                                clientPlayerSitMoveAmplifier = ModularMovements.CONFIG.slide.maxForce;
-                                clientPlayerSitMoveVec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
-                                        clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
+
+                                if (Minecraft.getMinecraft().player.isSprinting() && ModularMovements.CONFIG.slide.enable) {
+                                    if (wannaSliding) {
+                                        clientPlayerSitMoveAmplifierCharging = 1;
+                                    }
+                                    clientPlayerSitMoveAmplifierCharged = clientPlayerSitMoveAmplifierCharging;
+                                    clientPlayerSitMoveAmplifier = ModularMovements.CONFIG.slide.maxForce;
+                                    clientPlayerSitMoveVec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
+                                            clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
+                                }
                             }
                         }
+                    } else {
+                        sitKeyLock = true;
+                        double d0 = 0.3;
+                        if (!clientPlayer.world.collidesWithAnyBlock(
+                                new AxisAlignedBB(clientPlayer.posX - d0, clientPlayer.posY, clientPlayer.posZ - d0,
+                                        clientPlayer.posX + d0, clientPlayer.posY + 1.8, clientPlayer.posZ + d0))) {
+                            clientPlayerSitMoveAmplifier = 0;
+                            clientPlayerState.disableSit();
+                        }
                     }
-                } else {
-                    sitKeyLock = true;
-                    double d0 = 0.3;
-                    if (!clientPlayer.world.collidesWithAnyBlock(
-                            new AxisAlignedBB(clientPlayer.posX - d0, clientPlayer.posY, clientPlayer.posZ - d0,
-                                    clientPlayer.posX + d0, clientPlayer.posY + 1.8, clientPlayer.posZ + d0))) {
-                        clientPlayerSitMoveAmplifier = 0;
-                        clientPlayerState.disableSit();
-                    }
+                }
+            }
+        } else {
+            if ((!crawlingKeyLock && isButtonDown(sit.getKeyCode()))) {
+                Logger.getLogger("debug").info("1 triggered");
+                if (clientPlayer.onGround) {
+                    Logger.getLogger("debug").info("2 triggered");
+
+                    clientPlayer.jump();
+
+                    clientPlayerState.enableCrawling();
+                    Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
+                            clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
+                    Minecraft.getMinecraft().player.motionX = vec3d.x;
+                    Minecraft.getMinecraft().player.motionY = 0.6;
+                    Minecraft.getMinecraft().player.motionZ = vec3d.z;
+
                 }
             }
         }
@@ -207,22 +230,25 @@ public class ClientLitener {
         EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
         //sit
         onSit();
-
         //crawling
-        if(clientPlayerState.canCrawl()) {
+        if (clientPlayerState.canCrawl()) {
             if (!crawlingKeyLock && isButtonDown(crawling.getKeyCode())) {
                 crawlingKeyLock = true;
                 if (!clientPlayerState.isCrawling) {
-                    if (Minecraft.getMinecraft().player.onGround) {
-                        clientPlayerState.enableCrawling();
-                        if (Minecraft.getMinecraft().player.isSprinting()) {
-                            Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
-                                    clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
-                            Minecraft.getMinecraft().player.motionX = vec3d.x * clientPlayerSitMoveAmplifierCharging;
-                            Minecraft.getMinecraft().player.motionY = 0.2 * clientPlayerSitMoveAmplifierCharging;
-                            Minecraft.getMinecraft().player.motionZ = vec3d.z * clientPlayerSitMoveAmplifierCharging;
-                        }
+
+//                    if (Minecraft.getMinecraft().player.onGround) {
+//                    if (!Minecraft.getMinecraft().player.isElytraFlying()) {
+                    clientPlayerState.enableCrawling();
+                    if (Minecraft.getMinecraft().player.isSprinting()) {
+                        Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
+                                clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
+                        Minecraft.getMinecraft().player.motionX = vec3d.x * clientPlayerSitMoveAmplifierCharging;
+                        Minecraft.getMinecraft().player.motionY = 0.2 * clientPlayerSitMoveAmplifierCharging;
+                        Minecraft.getMinecraft().player.motionZ = vec3d.z * clientPlayerSitMoveAmplifierCharging;
                     }
+
+//                    }
+//                    }
                 } else {
                     double d0 = 0.3;
                     if (!clientPlayer.world.collidesWithAnyBlock(
@@ -234,12 +260,12 @@ public class ClientLitener {
             }
         }
 
-        if(ModularMovements.CONFIG.lean.withGunsOnly) {
+        if (ModularMovements.CONFIG.lean.withGunsOnly) {
             if (Loader.isModLoaded("modularwarfare")) {
                 if (Minecraft.getMinecraft().player.getHeldItemMainhand() != null) {
-                    if (!(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun)) {
-                        return;
-                    }
+//                    if (!(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun)) {
+//                        return;
+//                    }
                 } else {
                     return;
                 }
@@ -247,7 +273,7 @@ public class ClientLitener {
                 return;
             }
         }
-        if(clientPlayerState.canProbe()) {
+        if (clientPlayerState.canProbe()) {
             if (!probeKeyLock && isButtonDown(leftProbe.getKeyCode())) {
                 probeKeyLock = true;
                 if (clientPlayerState.probe != -1) {
@@ -290,7 +316,7 @@ public class ClientLitener {
     }
 
     public static boolean applyRotations(RenderLivingBase renderer, EntityLivingBase entityLiving, float p_77043_2_,
-            float rotationYaw, float partialTicks) {
+                                         float rotationYaw, float partialTicks) {
         if (entityLiving == Minecraft.getMinecraft().player && entityLiving.isEntityAlive()) {
             if (clientPlayerState.isSitting) {
                 GlStateManager.translate(0, -0.5, 0);
@@ -350,9 +376,9 @@ public class ClientLitener {
             float angle = (float) (ModularMovements.CONFIG.crawl.blockAngle * Math.PI);
             if (Math.abs(crawlingMousePosXMove + mouseHelper.deltaX) > angle) {
                 if (mouseHelper.deltaX > 0) {
-                    mouseHelper.deltaX = (int)(angle - crawlingMousePosXMove);
+                    mouseHelper.deltaX = (int) (angle - crawlingMousePosXMove);
                 } else {
-                    mouseHelper.deltaX = (int)(-angle - crawlingMousePosXMove);
+                    mouseHelper.deltaX = (int) (-angle - crawlingMousePosXMove);
                 }
             }
             crawlingMousePosXMove += mouseHelper.deltaX;
@@ -360,7 +386,7 @@ public class ClientLitener {
     }
 
     public static void setRotationAngles(ModelPlayer model, float limbSwing, float limbSwingAmount, float ageInTicks,
-            float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+                                         float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         setRotationAngles((ModelBiped) model, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch,
                 scaleFactor, entityIn);
         model.copyModelAngles(model.bipedLeftLeg, model.bipedLeftLegwear);
@@ -372,7 +398,7 @@ public class ClientLitener {
     }
 
     public static void setRotationAngles(ModelBiped model, float limbSwing, float limbSwingAmount, float ageInTicks,
-            float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+                                         float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         if (entityIn instanceof EntityPlayer && entityIn.isEntityAlive()) {
             PlayerState state = null;
             float offest = 0;
@@ -387,7 +413,7 @@ public class ClientLitener {
                 offest = state.probeOffset;
             }
 
-            if(state.isSitting){
+            if (state.isSitting) {
                 model.bipedRightLeg.rotateAngleX = -1.4137167F;
                 model.bipedRightLeg.rotateAngleY = ((float) Math.PI / 10F);
                 model.bipedRightLeg.rotateAngleZ = 0.07853982F;
@@ -406,12 +432,12 @@ public class ClientLitener {
                     ItemStack itemstack = ((AbstractClientPlayer) entityIn).getHeldItemMainhand();
                     if (itemstack != ItemStack.EMPTY && !itemstack.isEmpty()) {
                         if (ModularMovements.mwfEnable) {
-                            if (itemstack.getItem() instanceof BaseItem) {
-                                model.bipedLeftArm.rotateAngleY = 0;
-                                model.bipedRightArm.rotateAngleY = 0;
-                                model.bipedLeftArm.rotateAngleX = (float) (180 * 3.14 / 180);
-                                model.bipedRightArm.rotateAngleX = (float) (180 * 3.14 / 180);
-                            }
+//                            if (itemstack.getItem() instanceof BaseItem) {
+//                                model.bipedLeftArm.rotateAngleY = 0;
+//                                model.bipedRightArm.rotateAngleY = 0;
+//                                model.bipedLeftArm.rotateAngleX = (float) (180 * 3.14 / 180);
+//                                model.bipedRightArm.rotateAngleX = (float) (180 * 3.14 / 180);
+//                            }
                         }
                     }
                 }
@@ -707,7 +733,7 @@ public class ClientLitener {
             }
         }
         if (event.phase != Phase.END) {
-            if (event.player.isRiding()||event.player.isElytraFlying()) {
+            if (event.player.isRiding() || event.player.isElytraFlying()) {
                 clientPlayerSitMoveAmplifier = 0;
                 if (clientPlayerState.isSitting) {
                     clientPlayerState.disableSit();
@@ -790,7 +816,7 @@ public class ClientLitener {
          * Check if the state code has changed, and send a packet to the server
          */
         final int code = clientPlayerState.writeCode();
-        if(code != lastCode){
+        if (code != lastCode) {
             TacticalHandler.sendToServer(clientPlayerState.writeCode());
             lastCode = code;
         }
