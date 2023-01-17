@@ -788,7 +788,7 @@ public class ClientLitener {
         if (clientPlayerState.isSitting) {
             f1 = 1.2f;
         } else if (clientPlayerState.isCrawling) {
-            f1 = 0.5f;
+            f1 = 1.0f;
         }
         if (f != event.player.width || f1 != event.player.height) {
             AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();
