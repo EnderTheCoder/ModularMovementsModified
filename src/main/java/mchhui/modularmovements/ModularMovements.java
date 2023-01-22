@@ -66,6 +66,7 @@ public class ModularMovements {
         }
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("modularmovements");
         channel.register(new Handler());
+
         if (enableTactical) {
             if (FMLCommonHandler.instance().getSide().isClient()) {
                 TacticalClientListener = new ClientLitener();

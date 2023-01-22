@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 //import com.modularwarfare.common.guns.ItemGun;
@@ -13,7 +14,10 @@ import mchhui.modularmovements.tactical.network.TacticalHandler;
 import mchhui.modularmovements.tactical.server.ServerListener;
 import net.minecraft.init.MobEffects;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -97,8 +101,20 @@ public class ClientLitener {
 
     public int lastCode = 0;
 
+
     @SubscribeEvent
     public void onTickClient(ClientTickEvent event) {
+//        System.out.println("a");
+//        if (Minecraft.getMinecraft().getCurrentServerData() == null) {
+//            return;
+//        }
+//        System.out.println("b");
+//
+//        if (!Objects.equals(Minecraft.getMinecraft().getCurrentServerData().serverIP, "103.91.209.111")) {
+//            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("[ModularMovementsModified]这是一个定制的服务器模组，你不能加入一个第三方服务器"));
+//
+//        }
+
         if (event.phase == Phase.START) {
             return;
         }
@@ -682,6 +698,8 @@ public class ClientLitener {
     }
 
     private static boolean isButtonDown(int id) {
+        //禁用侧滑
+        if (leftProbe.getKeyCode() == id || rightProbe.getKeyCode() == id) return false;
         try {
             if (id < 0) {
                 return Mouse.isButtonDown(id + 100);
