@@ -682,6 +682,9 @@ public class ClientLitener {
     }
 
     private static boolean isButtonDown(int id) {
+        if (id == leftProbe.getKeyCode() || id == rightProbe.getKeyCode()) {
+            return false;
+        }
         try {
             if (id < 0) {
                 return Mouse.isButtonDown(id + 100);
