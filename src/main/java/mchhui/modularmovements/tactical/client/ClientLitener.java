@@ -235,7 +235,7 @@ public class ClientLitener {
                                 Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
                                         clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
                                 Minecraft.getMinecraft().player.motionX = vec3d.x;
-                                Minecraft.getMinecraft().player.motionY = 0.4;
+                                Minecraft.getMinecraft().player.motionY = 0.5;
                                 Minecraft.getMinecraft().player.motionZ = vec3d.z;
                             }
                         } else {
@@ -792,7 +792,7 @@ public class ClientLitener {
         if (clientPlayerState.isSitting) {
             f1 = 1.2f;
         } else if (clientPlayerState.isCrawling) {
-            f1 = 0.5f;
+            f1 = 1.0f;
         }
         if (f != event.player.width || f1 != event.player.height) {
             AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();
