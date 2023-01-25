@@ -229,14 +229,15 @@ public class ClientLitener {
                     if (Minecraft.getMinecraft().player.onGround) {
                         clientPlayerState.enableCrawling();
                         if (Minecraft.getMinecraft().player.isSprinting()) {
-                            clientPlayer.jump();
-
-                            clientPlayerState.enableCrawling();
-                            Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
-                                    clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
-                            Minecraft.getMinecraft().player.motionX = vec3d.x;
-                            Minecraft.getMinecraft().player.motionY = 0.6;
-                            Minecraft.getMinecraft().player.motionZ = vec3d.z;
+                            if (clientPlayerState.canSwoop()) {
+                                clientPlayerState.enableSwoop();
+                                clientPlayer.jump();
+                                Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
+                                        clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();
+                                Minecraft.getMinecraft().player.motionX = vec3d.x;
+                                Minecraft.getMinecraft().player.motionY = 0.4;
+                                Minecraft.getMinecraft().player.motionZ = vec3d.z;
+                            }
                         } else {
                             Vec3d vec3d = new Vec3d(clientPlayer.posX - clientPlayer.lastTickPosX, 0,
                                     clientPlayer.posZ - clientPlayer.lastTickPosZ).normalize();

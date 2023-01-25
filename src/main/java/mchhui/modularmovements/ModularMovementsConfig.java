@@ -41,6 +41,8 @@ public class ModularMovementsConfig {
         public float sitCooldown = 0.75f;
         public float crawlCooldown = 0.75f;
         public float leanCooldown = 0f;
+
+        public float swoopCooldown = 0f;
     }
 
     public String version = ModularMovements.MOD_VERSION;

@@ -25,6 +25,8 @@ public class PlayerState {
     private long lastCrawl;
     private long lastProbe;
 
+    private long lastSwoop;
+
     public void updateOffset() {
         double amplifer = (System.currentTimeMillis() - lastSyncTime) * (60 / 1000d);
         lastSyncTime = System.currentTimeMillis();
@@ -74,6 +76,10 @@ public class PlayerState {
         return (System.currentTimeMillis() - this.lastProbe > TimeUnit.SECONDS.toMillis((long)ModularMovements.CONFIG.cooldown.leanCooldown));
     }
 
+    public boolean canSwoop() {
+        return (System.currentTimeMillis() - this.lastSwoop > TimeUnit.SECONDS.toMillis((long)ModularMovements.CONFIG.cooldown.swoopCooldown));
+    }
+
     public void enableSit() {
         isSitting = true;
         disableCrawling();
@@ -88,6 +94,11 @@ public class PlayerState {
         isCrawling = true;
         disableSit();
         this.lastCrawl = System.currentTimeMillis();
+    }
+
+    public void enableSwoop() {
+        this.enableCrawling();
+        this.lastSwoop = System.currentTimeMillis();
     }
 
     public void disableCrawling() {
