@@ -104,9 +104,9 @@ public class ClientLitener {
     @SubscribeEvent
     public void onTickClient(ClientTickEvent event) {
 
-        if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) {
-            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
-        }
+//        if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) {
+//            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
+//        }
 
         if (event.phase == Phase.START) {
             return;
@@ -464,6 +464,7 @@ public class ClientLitener {
         } else {
             event.getEntityPlayer().setSneaking(false);
         }
+
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -848,7 +849,7 @@ public class ClientLitener {
             if (isSitting(event.player.getEntityId())) {
                 f1 = 1.2f;
             } else if (isCrawling(event.player.getEntityId())) {
-                f1 = 0.5f;
+                f1 = 1.0f;
             }
             if (f != event.player.width || f1 != event.player.height) {
                 AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();

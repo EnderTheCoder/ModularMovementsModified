@@ -15,6 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PlayerState {
     public boolean isSitting = false;
     public boolean isCrawling = false;
+
+    private boolean isExecuting = false;
+
     //0:middle -1:left 1:right
     public byte probe = 0;
     public float probeOffset = 0;
@@ -26,6 +29,7 @@ public class PlayerState {
     private long lastProbe;
 
     private long lastSwoop;
+
 
     public void updateOffset() {
         double amplifer = (System.currentTimeMillis() - lastSyncTime) * (60 / 1000d);
@@ -89,6 +93,12 @@ public class PlayerState {
     public void disableSit() {
         isSitting = false;
     }
+
+    public void enableExecuting() {
+        this.isExecuting = true;
+    }
+
+
 
     public void enableCrawling() {
         isCrawling = true;

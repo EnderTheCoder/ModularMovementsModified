@@ -3,6 +3,7 @@ package mchhui.modularmovements;
 import mchhui.modularmovements.network.Handler;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import mchhui.modularmovements.tactical.client.MWFClientListener;
+import mchhui.modularmovements.tactical.client.gecko.GeckoLibRegister;
 import mchhui.modularmovements.tactical.server.MWFServerListener;
 import mchhui.modularmovements.tactical.server.ServerListener;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+import software.bernie.example.CommonListener;
 
 import java.io.File;
 
@@ -66,9 +68,9 @@ public class ModularMovements {
         }
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("modularmovements");
         channel.register(new Handler());
-
         if (enableTactical) {
             if (FMLCommonHandler.instance().getSide().isClient()) {
+                MinecraftForge.EVENT_BUS.register(new GeckoLibRegister());
                 TacticalClientListener = new ClientLitener();
                 MinecraftForge.EVENT_BUS.register(TacticalClientListener);
                 if(mwfEnable) {
