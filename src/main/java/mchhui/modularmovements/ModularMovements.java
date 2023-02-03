@@ -3,9 +3,12 @@ package mchhui.modularmovements;
 import mchhui.modularmovements.network.Handler;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import mchhui.modularmovements.tactical.client.MWFClientListener;
-import mchhui.modularmovements.tactical.client.gecko.GeckoLibRegister;
+import mchhui.modularmovements.tactical.client.gecko.ReplacedDebuggerRenderer;
 import mchhui.modularmovements.tactical.server.MWFServerListener;
 import mchhui.modularmovements.tactical.server.ServerListener;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -19,7 +22,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
-import software.bernie.example.CommonListener;
+import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
+import software.bernie.example.entity.ReplacedCreeperEntity;
+import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
 import java.io.File;
 
@@ -31,11 +37,11 @@ public class ModularMovements {
     public static ClientLitener TacticalClientListener;
     public static ServerListener TacticalServerListener = new ServerListener();
     public static FMLEventChannel channel;
-    public static boolean mwfEnable=false;
+    public static boolean mwfEnable = false;
 
     public static final String MOD_ID = "modularmovements";
     public static final String MOD_NAME = "ModularMovements";
-    public static final String MOD_VERSION = "1.1.1f";
+    public static final String MOD_VERSION = "2.4";
 
     @Mod.Instance("modularmovements")
     public static ModularMovements INSTANCE;
@@ -61,26 +67,33 @@ public class ModularMovements {
     }
 
     @EventHandler
-    public void onInit(FMLInitializationEvent event) {
-        
-        if(Loader.isModLoaded("modularwarfare")) {
-            mwfEnable=true;
+    public void onInit(FMLInitializationEvent event)
+    {
+        if (Loader.isModLoaded("modularwarfare")) {
+            mwfEnable = true;
         }
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel("modularmovements");
         channel.register(new Handler());
         if (enableTactical) {
             if (FMLCommonHandler.instance().getSide().isClient()) {
-                MinecraftForge.EVENT_BUS.register(new GeckoLibRegister());
+
                 TacticalClientListener = new ClientLitener();
                 MinecraftForge.EVENT_BUS.register(TacticalClientListener);
-                if(mwfEnable) {
+                if (mwfEnable) {
                     MinecraftForge.EVENT_BUS.register(new MWFClientListener());
                 }
                 TacticalClientListener.onFMLInit(event);
+
+                //geckolib
+                GeckoLib.initialize();
+                RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+                ReplacedDebuggerRenderer creeperRenderer = new ReplacedDebuggerRenderer(renderManager);
+                renderManager.entityRenderMap.put(EntityBat.class, creeperRenderer);
+                GeoReplacedEntityRenderer.registerReplacedEntity(ReplacedCreeperEntity.class, creeperRenderer);
             }
             TacticalServerListener.onFMLInit(event);
             MinecraftForge.EVENT_BUS.register(TacticalServerListener);
-            if(mwfEnable) {
+            if (mwfEnable) {
                 MinecraftForge.EVENT_BUS.register(new MWFServerListener());
             }
         }

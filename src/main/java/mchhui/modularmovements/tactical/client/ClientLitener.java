@@ -63,6 +63,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
+import software.bernie.example.entity.ReplacedCreeperEntity;
+import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
 @SideOnly(Side.CLIENT)
 public class ClientLitener {
@@ -722,6 +725,7 @@ public class ClientLitener {
 
     @SubscribeEvent
     public void onTickPlayer(PlayerTickEvent event) {
+        event.player.setInvisible(true);
         if (Minecraft.getMinecraft().player == null) {
             return;
         }
