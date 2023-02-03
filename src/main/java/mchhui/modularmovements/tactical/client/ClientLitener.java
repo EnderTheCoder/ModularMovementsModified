@@ -107,9 +107,9 @@ public class ClientLitener {
     @SubscribeEvent
     public void onTickClient(ClientTickEvent event) {
 
-//        if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) {
-//            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
-//        }
+        if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) {
+            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
+        }
 
         if (event.phase == Phase.START) {
             return;

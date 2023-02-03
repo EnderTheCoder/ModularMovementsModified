@@ -8,19 +8,19 @@ import software.bernie.example.entity.ReplacedCreeperEntity;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class GeckoFakePlayerModel1 extends AnimatedGeoModel<ReplacedCreeperEntity> {
+public class GeckoFakePlayerModel1 extends AnimatedGeoModel<GeckoFakePlayerEntity> {
     @Override
-    public ResourceLocation getAnimationFileLocation(ReplacedCreeperEntity entity) {
+    public ResourceLocation getAnimationFileLocation(GeckoFakePlayerEntity entity) {
         return new ResourceLocation(ModularMovements.MOD_ID, "animations/execution.animation.json");
     }
 
     @Override
-    public ResourceLocation getModelLocation(ReplacedCreeperEntity entity) {
-        return new ResourceLocation(ModularMovements.MOD_ID, "animations/execution.animation.json");
+    public ResourceLocation getModelLocation(GeckoFakePlayerEntity entity) {
+        return new ResourceLocation(ModularMovements.MOD_ID, "geo/player.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ReplacedCreeperEntity entity) {
+    public ResourceLocation getTextureLocation(GeckoFakePlayerEntity entity) {
         return Minecraft.getMinecraft().player.getLocationSkin();
     }
 }

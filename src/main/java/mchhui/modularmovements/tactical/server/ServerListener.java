@@ -7,6 +7,7 @@ import java.util.Map;
 
 //import com.modularwarfare.api.PlayerSnapshotCreateEvent;
 
+import mchhui.modularmovements.ModularMovements;
 import mchhui.modularmovements.tactical.PlayerState;
 import mchhui.modularmovements.tactical.network.TacticalHandler;
 import net.minecraft.client.Minecraft;
@@ -39,6 +40,9 @@ public class ServerListener {
     public void onLogin(PlayerLoggedInEvent event) {
         playerStateMap.put(event.player.getEntityId(), new PlayerState());
         TacticalHandler.sendClientConfig((EntityPlayerMP) event.player);
+        if (!dev.ender.modularmovementsmodifiedverify.ForgeApi.getKey().equals("114514")) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

@@ -89,6 +89,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.12.2:3.0.31')
+
+    compileOnly("dev.ender:modularmovementsmodifiedverify:1.0")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

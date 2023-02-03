@@ -10,22 +10,10 @@ import software.bernie.example.entity.ReplacedCreeperEntity;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
-public class ReplacedDebuggerRenderer extends GeoReplacedEntityRenderer<ReplacedCreeperEntity> {
+public class ReplacedDebuggerRenderer extends GeoEntityRenderer<GeckoFakePlayerEntity> {
     @SuppressWarnings("unchecked")
     public ReplacedDebuggerRenderer(RenderManager renderManager) {
-        super(renderManager, new GeckoFakePlayerModel1(), new ReplacedCreeperEntity());
+        super(renderManager, new GeckoFakePlayerModel1());
     }
 
-    @Override
-    protected void preRenderCallback(EntityLivingBase entitylivingbaseIn, float partialTickTime) {
-        EntityCreeper creeper = (EntityCreeper) entitylivingbaseIn;
-        float f = creeper.getCreeperFlashIntensity(partialTickTime);
-        float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
-        f = MathHelper.clamp(f, 0.0F, 1.0F);
-        f = f * f;
-        f = f * f;
-        float f2 = (1.0F + f * 0.4F) * f1;
-        float f3 = (1.0F + f * 0.1F) / f1;
-        GlStateManager.scale(f2, f3, f2);
-    }
 }

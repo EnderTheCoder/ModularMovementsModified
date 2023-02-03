@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
 import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
 import software.bernie.example.entity.ReplacedCreeperEntity;
 import software.bernie.geckolib3.GeckoLib;
@@ -54,8 +55,11 @@ public class ModularMovements {
     public static ModularMovementsConfig CONFIG;
 
 
+
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
+
+
         LOGGER = event.getModLog();
         // Creates directory if doesn't exist
         MOD_DIR = new File(event.getModConfigurationDirectory().getParentFile(), "ModularMovements");
@@ -86,10 +90,6 @@ public class ModularMovements {
 
                 //geckolib
                 GeckoLib.initialize();
-                RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-                ReplacedDebuggerRenderer creeperRenderer = new ReplacedDebuggerRenderer(renderManager);
-                renderManager.entityRenderMap.put(EntityBat.class, creeperRenderer);
-                GeoReplacedEntityRenderer.registerReplacedEntity(ReplacedCreeperEntity.class, creeperRenderer);
             }
             TacticalServerListener.onFMLInit(event);
             MinecraftForge.EVENT_BUS.register(TacticalServerListener);
