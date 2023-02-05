@@ -3,12 +3,8 @@ package mchhui.modularmovements;
 import mchhui.modularmovements.network.Handler;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import mchhui.modularmovements.tactical.client.MWFClientListener;
-import mchhui.modularmovements.tactical.client.gecko.ReplacedDebuggerRenderer;
 import mchhui.modularmovements.tactical.server.MWFServerListener;
 import mchhui.modularmovements.tactical.server.ServerListener;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.passive.EntityBat;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -22,11 +18,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.Sys;
-import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
-import software.bernie.example.entity.ReplacedCreeperEntity;
-import software.bernie.geckolib3.GeckoLib;
-import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
 import java.io.File;
 
@@ -87,9 +78,6 @@ public class ModularMovements {
                     MinecraftForge.EVENT_BUS.register(new MWFClientListener());
                 }
                 TacticalClientListener.onFMLInit(event);
-
-                //geckolib
-                GeckoLib.initialize();
             }
             TacticalServerListener.onFMLInit(event);
             MinecraftForge.EVENT_BUS.register(TacticalServerListener);
