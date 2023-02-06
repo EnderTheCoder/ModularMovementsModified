@@ -45,6 +45,7 @@ public class ModularMovements {
 
     public static ModularMovementsConfig CONFIG;
 
+    public static boolean ENABLED = false;
 
 
     @EventHandler
@@ -94,5 +95,9 @@ public class ModularMovements {
                 TacticalClientListener.onFMLInitPost(event);
             }
         }
+    }
+
+    public static void enableMod() {
+        ENABLED = true;
     }
 }

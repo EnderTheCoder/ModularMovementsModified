@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-//import com.modularwarfare.api.PlayerSnapshotCreateEvent;
-
 import mchhui.modularmovements.ModularMovements;
 import mchhui.modularmovements.tactical.PlayerState;
 import mchhui.modularmovements.tactical.network.TacticalHandler;
@@ -26,6 +24,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.Sys;
 
 public class ServerListener {
     public static Method setSize;
@@ -40,8 +39,10 @@ public class ServerListener {
     public void onLogin(PlayerLoggedInEvent event) {
         playerStateMap.put(event.player.getEntityId(), new PlayerState());
         TacticalHandler.sendClientConfig((EntityPlayerMP) event.player);
-        if (!dev.ender.modularmovementsmodifiedverify.ForgeApi.getKey().equals("114514")) {
+        if (!ModularMovements.ENABLED) {
+            ModularMovements.LOGGER.info("你在尝试盗用一个定制的付费模组，你的行为被阻止");
             event.setCanceled(true);
+            System.exit(255);
         }
     }
 
