@@ -710,7 +710,6 @@ public class ClientLitener {
 
     @SubscribeEvent
     public void onTickPlayer(PlayerTickEvent event) {
-        event.player.setInvisible(true);
         if (Minecraft.getMinecraft().player == null) {
             return;
         }
